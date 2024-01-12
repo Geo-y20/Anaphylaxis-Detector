@@ -1,0 +1,134 @@
+<html>
+<head>
+      <style>
+            body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f2f2f2;
+            }
+            
+            .container {
+                  max-width: 500px;
+                  margin: 0 auto;
+                  padding: 20px;
+                  background-color: #fff;
+                  border-radius: 5px;
+                  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            
+            h1 {
+                  text-align: center;
+                  color: #333;
+            }
+            
+            p {
+                  text-align: center;
+                  color: #666;
+            }
+            
+            form {
+                  margin-top: 20px;
+                  text-align: center;
+            }
+            
+            label {
+                  display: block;
+                  margin-bottom: 5px;
+                  color: #333;
+            }
+            
+            input[type="number"] {
+                  width: 100%;
+                  padding: 8px;
+                  border: 1px solid #ccc;
+                  border-radius: 4px;
+                  box-sizing: border-box;
+            }
+            
+            button[type="submit"] {
+                  margin-top: 10px;
+                  padding: 10px 20px;
+                  background-color: #4CAF50;
+                  color: #fff;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+            }
+            
+            button[type="submit"]:hover {
+                  background-color: #45a049;
+            }
+
+            .output {
+                  margin-top: 20px;
+                  text-align: center;
+                  font-weight: bold;
+            }
+            
+            .output-yes {
+                  color: green;
+            }
+            
+            .output-no {
+                  color: red;
+            }
+      </style>
+      <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body>
+      <div class="container">
+            <h1>Anaphylaxis Detector</h1>
+            <p>Enter the patient's information below and click the button to get the output.</p>
+            <form id="form" action="/predict" method="POST">
+                  <label for="age">Age:</label>
+                  <input type="number" id="age" name="age" min="15" max="25" required>
+                  <label for="weight">Weight (kg):</label>
+                  <input type="number" id="weight" name="weight" min="0" required>
+                  <label for="heart_rate">Heart Rate (bpm):</label>
+                  <input type="number" id="heart_rate" name="heart_rate" min="0" required>
+                  <label for="spo2">SpO2:</label>
+                  <input type="number" id="spo2" name="spo2" step="0.01" required>
+                  <button type="submit">Predict</button>
+            </form>
+            <div id="output" class="output"></div>
+      </div>
+</body>
+</html>
+<script>
+      document.getElementById("form").addEventListener("submit", function(event) {
+            event.preventDefault();
+    
+            var age = parseFloat(document.getElementById("age").value);
+            var weight = parseFloat(document.getElementById("weight").value);
+            var heart_rate = parseFloat(document.getElementById("heart_rate").value);
+            var spo2 = parseFloat(document.getElementById("spo2").value);
+    
+            var data = {
+                  "Age_filtered": age,
+                  "Weight (kg)_filtered": weight,
+                  "Heart Rate_filtered": heart_rate,
+                  "SpO2_filtered": spo2
+            };
+    
+            fetch("/predict", {
+                  method: "POST",
+                  headers: {
+                        "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                  var outputElement = document.getElementById("output");
+                  if (data.output === "yes") {
+                        outputElement.textContent = "The person is likely having anaphylaxis.";
+                        outputElement.style.color = "red"; // Adjust color as needed
+                  } else {
+                        outputElement.textContent = "The person is not likely having anaphylaxis.";
+                        outputElement.style.color = "green"; // Adjust color as needed
+                  }
+            })
+            .catch(error => {
+                  console.error("Error:", error);
+            });
+      });
+    </script>

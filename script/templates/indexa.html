@@ -84,9 +84,9 @@
                   <label for="weight">Weight (kg):</label>
                   <input type="number" id="weight" name="weight" min="0" required>
                   <label for="heart_rate">Heart Rate (bpm):</label>
-                  <input type="number" id="heart_rate" name="heart_rate" min="0" required>
+                  <span id="heartRate">{{ sensor_data['heart_rate'] }}</span><br>
                   <label for="spo2">SpO2:</label>
-                  <input type="number" id="spo2" name="spo2" step="0.01" required>
+                  <span id="spo2">{{ sensor_data['spo2'] }}</span><br>
                   <button type="submit">Predict</button>
             </form>
             <div id="output" class="output"></div>
@@ -100,36 +100,43 @@
   
           var age = parseFloat(document.getElementById("age").value);
           var weight = parseFloat(document.getElementById("weight").value);
-          var heart_rate = parseFloat(document.getElementById("heart_rate").value);
-          var spo2 = parseFloat(document.getElementById("spo2").value);
   
-          var data = {
-              "age": age,
-              "weight": weight,
-              "heart_rate": heart_rate,
-              "spo2": spo2
-          };
+          // Fetch real-time sensor data
+          fetch("/").then(response => response.json()).then(sensorData => {
+              // Update heart rate and SpO2 spans
+              document.getElementById("heartRate").textContent = sensorData.heart_rate;
+              document.getElementById("spo2").textContent = sensorData.spo2;
   
-          fetch("/predict", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json"
-              },
-              body: JSON.stringify(data)
-          })
-          .then(response => response.json())
-          .then(data => {
-              var outputElement = document.getElementById("output");
-              if (data.output === "yes") {
-                  outputElement.textContent = "The person is likely having anaphylaxis.";
-                  outputElement.style.color = "red"; // Adjust color as needed
-              } else {
-                  outputElement.textContent = "The person is not likely having anaphylaxis.";
-                  outputElement.style.color = "green"; // Adjust color as needed
-              }
-          })
-          .catch(error => {
-              console.error("Error:", error);
+              // Prepare data for prediction
+              var data = {
+                  "age": age,
+                  "weight": weight,
+                  "heart_rate": sensorData.heart_rate,
+                  "spo2": sensorData.spo2
+              };
+  
+              // Make prediction request
+              fetch("/predict", {
+                  method: "POST",
+                  headers: {
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify(data)
+              })
+              .then(response => response.json())
+              .then(predictionData => {
+                  var outputElement = document.getElementById("output");
+                  if (predictionData.output === "yes") {
+                      outputElement.textContent = "The person is likely having anaphylaxis.";
+                      outputElement.style.color = "red"; // Adjust color as needed
+                  } else {
+                      outputElement.textContent = "The person is not likely having anaphylaxis.";
+                      outputElement.style.color = "green"; // Adjust color as needed
+                  }
+              })
+              .catch(error => {
+                  console.error("Error:", error);
+              });
           });
       });
   </script>

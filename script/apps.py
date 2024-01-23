@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import pickle
 import pandas as pd
+import random
 
 app = Flask(__name__)
 
@@ -9,16 +10,22 @@ with open("model_Ss_best.pkl", "rb") as model_file:
     model = pickle.load(model_file)
 
 def get_sensor_data():
-    # Simulate sensor data (replace this with your desired simulated values)
-    simulated_heart_rate = 75.0
-    simulated_spo2 = 98.0
+    # Simulate heart rate within the range of 110 to 155 bpm
+    simulated_heart_rate = random.uniform(110, 155)
+    
+    # Simulate SpO2 within the range of 0.80 to 0.92
+    simulated_spo2 = random.uniform(0.80, 0.92)
 
-    return {'heart_rate': simulated_heart_rate, 'spo2': simulated_spo2}
+    # Round values to one decimal place for heart rate and two decimal places for SpO2
+    rounded_heart_rate = round(simulated_heart_rate, 1)
+    rounded_spo2 = round(simulated_spo2, 2)
+
+    return {'heart_rate': rounded_heart_rate, 'spo2': rounded_spo2}
 
 @app.route('/')
 def index():
     sensor_data = get_sensor_data()
-    return render_template('indexa.html', sensor_data=sensor_data)
+    return render_template('indexs.html', sensor_data=sensor_data)
 
 # Update the /predict route in app.py
 @app.route('/predict', methods=['POST'])

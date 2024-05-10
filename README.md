@@ -3,7 +3,7 @@
 
 ## Description
 
-This project aims to analyze patient data collected from medical sensors to understand the relationships between different health indicators and devise appropriate treatment plans. The dataset comprises several variables including patient age, weight, heart rate, oxygen concentration (SpO2), and recommended medication dosage.
+The Anaphylaxis-Detector project aims to analyze patient data collected from medical sensors to understand the relationships between different health indicators and devise appropriate treatment plans. The dataset comprises several variables including patient age, weight, heart rate, oxygen concentration (SpO2), and recommended medication dosage.
 
 ## Requirements
 
@@ -49,7 +49,13 @@ pip install -r requirements.txt
 
 This will install all the required packages specified in the `requirements.txt` file.
 
+## Connecting with Arduino and Water Pump Control
+
+To connect with Arduino and get live sensor readings while controlling a water pump, follow the instructions provided in the project's documentation.
+
 ## Contributing
 
-Guidelines for contributing to the project if applicable.
+- George Youhana - g.ghaly0451@student.aast.edu
+- Mostafa Magdy - Mustafa.10770@stemredsea.moe.edu.eg
+- Abdallah Alkhouly - a.alkholy53@student.aast.edu
 

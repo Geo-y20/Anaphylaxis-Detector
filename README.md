@@ -1,5 +1,5 @@
 
-# Project Name
+# Anaphylaxis-Detector
 
 ## Description
 
